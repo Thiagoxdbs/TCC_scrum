@@ -24,7 +24,8 @@ class GerenciadorBancoDeDados:
             tarefa TEXT NOT NULL,
             tipo TEXT NOT NULL,
             quantidade INTEGER NOT NULL,
-            data TEXT NOT NULL
+            data TEXT NOT NULL,
+            concluida INTEGER DEFAULT 0  -- Adicionando a coluna de status de conclusão
         )
         """)
 
@@ -59,8 +60,8 @@ class GerenciadorBancoDeDados:
         """
         data = datetime.now().strftime("%Y-%m-%d")
         self.cursor.execute("""
-        INSERT INTO tarefas_dia (nome, tarefa, tipo, quantidade, data)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO tarefas_dia (nome, tarefa, tipo, quantidade, data, concluida)
+        VALUES (?, ?, ?, ?, ?, 0)
         """, (nome, tarefa, tipo, quantidade, data))
         self.conexao.commit()
 
@@ -198,6 +199,20 @@ class GerenciadorBancoDeDados:
             SET nome=?, tarefa=?, tipo=?, quantidade=?
             WHERE id=?
             """, (nome, tarefa, tipo, quantidade, id_tarefa))
+        self.conexao.commit()
+
+    def atualizar_status_tarefa(self, id_tarefa, concluida):
+        """
+        Atualiza o status de conclusão de uma tarefa.
+
+        :param id_tarefa: ID da tarefa a ser atualizada.
+        :param concluida: Novo status de conclusão (0 ou 1).
+        """
+        self.cursor.execute("""
+        UPDATE tarefas_dia
+        SET concluida=?
+        WHERE id=?
+        """, (concluida, id_tarefa))
         self.conexao.commit()
 
     def atualizar_colaborador(self, id_colaborador, nome):
