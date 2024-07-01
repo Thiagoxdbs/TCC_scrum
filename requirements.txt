@@ -1,2 +1,6 @@
+customtkinter
+tkinter
+pandas
 matplotlib
+Pillow
 sqlite3
